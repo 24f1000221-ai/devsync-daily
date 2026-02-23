@@ -1,5 +1,8 @@
 name: Daily Auto Commit
 
+permissions:
+  contents: write
+
 on:
   schedule:
     - cron: '0 2 * * *'
@@ -12,18 +15,20 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          persist-credentials: true
 
       - name: Step with email 24f1000221@ds.study.iitm.ac.in
         run: echo "Workflow triggered"
 
       - name: Make changes
         run: |
-          echo "Last updated on $(date)" >> daily-log.txt
+          echo "Last updated on $(date)" > daily-log.txt
 
       - name: Commit and Push
         run: |
-          git config --global user.name "DevSync Bot"
-          git config --global user.email "24f1000221@ds.study.iitm.ac.in"
+          git config user.name "DevSync Bot"
+          git config user.email "24f1000221@ds.study.iitm.ac.in"
           git add daily-log.txt
-          git commit -m "Automated daily commit" || echo "Nothing to commit"
+          git commit -m "Automated daily commit"
           git push
